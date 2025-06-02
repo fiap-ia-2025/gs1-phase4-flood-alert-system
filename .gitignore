@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+
+# PlatformIO
+.pio/
+.vscode/
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db
