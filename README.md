@@ -32,7 +32,7 @@
 
 ## 📖 Descrição do Projeto
 
-Este sistema é uma solução digital desenvolvida no âmbito da Global Solution 2025.1 da FIAP, com o objetivo de prever e monitorar os riscos de enchentes na cidade do Recife, Pernambuco. Utilizando uma abordagem baseada em dados, o sistema simula um ambiente com sensores IoT, coleta e processa essas informações, e emprega um modelo de Machine Learning em conjunto com regras de negócio para classificar o nível de risco e emitir alertas para população.
+Este sistema é uma solução digital desenvolvida no âmbito da Global Solution 2025.1 da FIAP, com o objetivo de prever e monitorar os riscos de enchentes na cidade do Recife, Pernambuco. Utilizando uma abordagem baseada em dados, o sistema simula um ambiente com sensores IoT, coleta e processa essas informações, e emprega um modelo de Machine Learning em conjunto com regras de negócio para classificar o nível de risco e emitir alertas.
 
 Este projeto visa demonstrar como a tecnologia e a Inteligência Artificial podem ser aplicadas para mitigar os impactos de eventos naturais extremos, oferecendo uma ferramenta proativa para a Defesa Civil e para a população.
 
@@ -47,16 +47,16 @@ Para garantir a relevância e eficácia deste sistema para Recife, o mesmo foi c
 * **Parâmetros Hidrológicos Oficiais:** Os limiares de alerta do sistema são baseados nos dados técnicos da Agência Pernambucana de Águas e Clima (APAC) para o Rio Capibaribe (estação São Lourenço da Mata), conforme o *Relatório Progestão 2022*:
     * **Cota de Alerta:** 300 cm
     * **Cota de Inundação:** 400 cm
-    
 * **Padrões Meteorológicos:** A simulação considera as classificações de intensidade de chuva do Instituto Nacional de Meteorologia (INMET) e dados climatológicos de temperatura e umidade para Recife.
 
 A combinação desses dados reais e parâmetros oficiais na calibração da simulação e na lógica do sistema assegura que o sistema opere com base na realidade hidrometeorológica de Recife.
 
 ## ⚙️ Arquitetura Geral do Sistema
 
+
 O sistema é composto pelos seguintes módulos principais:
 
-1.  **Módulo Sensor IoT (Simulador ESP32 no Wokwi):** Simula a coleta de dados ambientais (nível da água, chuva, umidade do solo, temperatura, umidade do ar) em tempo real, representando um evento de enchente em 5 fases progressivas.
+1.  **Módulo Sensor IoT (Simulador ESP32 no Wokwi):** Coleta de dados ambientais (nível da água, chuva, umidade do solo, temperatura, umidade do ar) em tempo real e simulação um evento de enchente em 5 fases progressivas.
 2.  **Comunicação MQTT:** Os dados simulados são publicados em um tópico MQTT.
 3.  **Receptor de Dados Python:** Um script Python (`receptor_mqtt.py`) assina o tópico MQTT, recebe os dados e os armazena em um banco de dados SQLite.
 4.  **Banco de Dados SQLite (`projeto.db`):** Armazena o histórico de leituras dos sensores.
@@ -66,8 +66,9 @@ O sistema é composto pelos seguintes módulos principais:
 
 ## ✨ Principais Funcionalidades
 
+* Coleta de dados sobre umidade do ar e do solo, tempetura, nível de água e intensidade de chuva
 * Simulação realista de um evento de enchente em 5 fases progressivas.
-* Coleta e armazenamento de dados de sensores simulados.
+* Armazenamento de dados de sensores e da simulação.
 * Treinamento de um modelo de Machine Learning para classificação de risco (Normal, Alerta, Perigo).
 * Aplicação de uma arquitetura híbrida: IA + Regras de Negócio para maior segurança.
 * Cálculo de chuva acumulada nas últimas 24 horas para complementar a análise de risco.
@@ -75,7 +76,7 @@ O sistema é composto pelos seguintes módulos principais:
 
 ## 🛠️ Tecnologias Utilizadas
 
-* **Simulação IoT:** Wokwi com ESP32 (linguagem C/C++)
+* **Módulo IoT:** Wokwi com ESP32 (linguagem C/C++)
 * **Comunicação:** Protocolo MQTT (Broker público HiveMQ)
 * **Backend & IA:** Python 3.x
     * `paho-mqtt`: Cliente MQTT
@@ -116,22 +117,52 @@ gs1-phase4-flood-alert-system/
 
 ### Módulo Sensor IoT (Simulação ESP32 no Wokwi)
 
-O arquivo `iot-sensor-module/src/main.cpp` contém o código para o ESP32 que simula os dados dos sensores.
+O arquivo `iot-sensor-module/src/main.cpp` contém o código para o ESP32 responsável por simular e/ou coletar dados reais de sensores ambientais relevantes para enchentes.
 
-* **Funcionamento da Simulação de 5 Fases:**
-    O Wokwi simula um evento de enchente progressivo, crucial para que a IA aprenda a dinâmica temporal e as transições entre os níveis de risco. Cada fase dura aproximadamente 45 segundos:
-    1.  **`FASE_1_NORMAL`:** Condições normais, chuva leve ou ausente, rio em nível seguro (base ~180cm).
-    2.  **`FASE_2_AUMENTO`:** Simula o início de uma tempestade violenta (chuva >50mm/h). O nível do rio começa a subir rapidamente, aproximando-se da cota de alerta (300cm). A umidade do solo aumenta.
-    3.  **`FASE_3_ALERTA`:** Chuva forte contínua (25-50mm/h) sobre solo já saturado. O nível do rio ultrapassa a cota de alerta (300cm) e se aproxima e ultrapassa a cota de inundação (400cm).
-    4.  **`FASE_4_CRITICO`:** A chuva pode diminuir de intensidade, mas o nível do rio atinge seu pico máximo (simulado até ~450cm), devido ao escoamento da água acumulada.
-    5.  **`FASE_5_RECEDENDO`:** A chuva cessa ou é muito fraca. O nível do rio e a umidade do solo começam a diminuir gradualmente, retornando aos níveis normais.
+**Principais Características:**
 
-* **Calibração com Dados de Recife:**
-    A simulação é calibrada para gerar dados que refletem a realidade de Recife:
-    * Nível do rio: Progressão em direção e ultrapassando as cotas de 300cm (Alerta) e 400cm (Inundação).
-    * Chuva: Intensidades que correspondem a eventos reais observados (ex: picos acima de 50-70mm/h) e alinhadas com os padrões INMET.
-    * Outros sensores: Temperatura (22-29°C) e umidade do ar (>80%) consistentes com o período chuvoso.
+- **Modo Duplo:** O sistema pode operar tanto em modo simulação (evento de enchente em 5 fases) quanto em modo real (leitura dos sensores físicos), alternando entre eles por meio de um botão físico conectado ao ESP32.
+- **Sensores Utilizados:**
+  - **Ultrassônico:** Mede o nível da água (em cm).
+  - **MQ2 (simulado):** Mede a intensidade da chuva (mm/h).
+  - **NTC (simulado):** Mede a umidade do solo (%).
+  - **DHT22:** Mede temperatura do ar (°C) e umidade relativa do ar (%).
+- **Envio dos Dados:** Os dados são enviados a cada 2 segundos para o broker MQTT público (`broker.hivemq.com`) no tópico `fiap/gs/inundacao`, no formato JSON.
 
+**Funcionamento da Simulação de 5 Fases:**
+
+Cada fase dura aproximadamente 45 segundos, simulando a evolução de um evento de enchente realista calibrado para Recife:
+
+1. **FASE_1_NORMAL:**  
+   - Chuva leve ou ausente (0–10 mm/h), nível do rio seguro (~180 cm), solo em condição normal (~65%).
+2. **FASE_2_AUMENTO:**  
+   - Início de tempestade violenta (chuva 50–75 mm/h), nível do rio sobe rapidamente até a cota de alerta (300 cm), solo ficando mais úmido.
+3. **FASE_3_ALERTA:**  
+   - Chuva forte contínua (25–50 mm/h) sobre solo já saturado, nível do rio ultrapassa a cota de alerta (300 cm) e se aproxima da cota de inundação (420 cm), umidade do solo próxima do máximo.
+4. **FASE_4_CRITICO:**  
+   - Chuva diminui (5–25 mm/h), mas o nível do rio atinge o pico máximo (até 450 cm) devido ao acúmulo de água, solo saturado.
+5. **FASE_5_RECEDENDO:**  
+   - Chuva cessa ou é muito fraca (0–5 mm/h), nível do rio e umidade do solo diminuem gradualmente, retornando aos valores normais.
+
+**Modo Real:**
+
+- Quando o modo simulação está desativado, o ESP32 lê os valores dos sensores físicos conectados e envia os dados reais para o backend, permitindo testes com hardware real.
+
+**Calibração e Realismo:**
+
+- Os valores simulados para cada sensor foram definidos com base em dados históricos e parâmetros oficiais para Recife, garantindo realismo e relevância para o contexto local.
+- O ciclo completo da simulação permite observar a evolução de um evento extremo, desde a normalidade até o pico de inundação e o retorno à estabilidade.
+
+**Resumo Técnico e Diagrama:**
+
+- O ESP32 conecta-se automaticamente ao Wi-Fi e ao broker MQTT.
+- Alternância entre modo simulação e modo real via botão físico (com debounce).
+- Dados enviados em formato JSON, incluindo: `water_level_cm`, `rain_mm_hour`, `soil_humidity_pct`, `temp_c`, `humidity_air_pct`.
+- Ao final da FASE_5_RECEDENDO, o ciclo é reiniciado automaticamente.
+
+<img src="img/diagrama.png" alt="diagrama do circuito" border="0" width="60%" height="40%">
+
+> Este módulo é fundamental para fornecer dados realistas e variados ao backend Python, permitindo o treinamento e validação do modelo de Machine Learning e das regras de negócio do sistema de alerta.
 ### Pipeline de Dados
 
 1.  **MQTT:** O ESP32 (Wokwi) envia os dados dos sensores como um payload JSON para o broker público `broker.hivemq.com` no tópico `fiap/gs/inundacao`.
@@ -161,6 +192,20 @@ Este módulo consolida as informações para gerar o alerta final.
 5.  Determina o `status_final` e retorna um dicionário com o status, cor e mensagem.
 
 ## ▶️ Como Rodar o Projeto
+
+### ⚠️ Importante: Estratégia de Uso dos Modos (Simulação vs. Real)
+
+O Módulo Sensor IoT opera em dois modos distintos, e é crucial entender o propósito de cada um para o treinamento e teste do sistema de IA:
+
+* **Modo Simulação (Para Treinamento de Qualidade):**
+    Este modo gera o cenário completo e calibrado de uma enchente em 5 fases. **É o modo que deve ser utilizado para gerar o `projeto.db` destinado ao treinamento inicial do modelo**, pois garante um conjunto de dados rico, com exemplos de todas as categorias de risco (Normal, Alerta, Perigo).
+
+* **Modo Real (Para Teste e Validação em Tempo Real):**
+    Este modo lê os valores dos controles manuais no Wokwi. **É ideal para testar a resposta do sistema *já treinado* a dados arbitrários e validar o fluxo de ponta a ponta.** Não é recomendado usar dados gerados neste modo para o treinamento inicial, pois eles podem não conter a diversidade e a progressão necessárias.
+
+> **Recomendação:** Para replicar os resultados e garantir a maior acurácia do modelo, sempre gere seu conjunto de dados de treinamento utilizando o **Modo Simulação**.
+
+---
 
 ### ✅ Requisitos
 
@@ -256,7 +301,11 @@ Se desejar gerar um novo conjunto de dados ou testar o pipeline completo:
     ```bash
     python testar_analise.py
     ```
-*(incluir aqui o próximo passo que será o streamlit)*
+7.  **Dashboard Streamlit:**
+   Ainda na pasta `python-backend`, para verificar o dashboard com as informações da previsão de risco, execute:
+    ```bash
+    streamlit run app.py
+    ```
 
 ## 📊 Resultados Esperados e Demonstração
 
@@ -300,4 +349,3 @@ A calibração e contextualização deste projeto foram baseadas em dados e info
     * Referências (citando INMET):
         * [Cosch - O que é índice pluviométrico?](https://cosch.com.br/o-que-e-indice-pluviometrico/)
         * [Portal Multiplix - Meteorologista do INMET explica como classificar a intensidade das chuvas](https://www.portalmultiplix.com/noticias/cotidiano/meteorologista-do-inmet-explica-como-classificar-a-intensidade-das-chuvas)
----
