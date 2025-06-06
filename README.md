@@ -153,12 +153,14 @@ Cada fase dura aproximadamente 45 segundos, simulando a evolução de um evento 
 - Os valores simulados para cada sensor foram definidos com base em dados históricos e parâmetros oficiais para Recife, garantindo realismo e relevância para o contexto local.
 - O ciclo completo da simulação permite observar a evolução de um evento extremo, desde a normalidade até o pico de inundação e o retorno à estabilidade.
 
-**Resumo Técnico:**
+**Resumo Técnico e Diagrama:**
 
 - O ESP32 conecta-se automaticamente ao Wi-Fi e ao broker MQTT.
 - Alternância entre modo simulação e modo real via botão físico (com debounce).
 - Dados enviados em formato JSON, incluindo: `water_level_cm`, `rain_mm_hour`, `soil_humidity_pct`, `temp_c`, `humidity_air_pct`.
 - Ao final da FASE_5_RECEDENDO, o ciclo é reiniciado automaticamente.
+
+<img src="img/diagrama.png" alt="diagrama do circuito" border="0" width="60%" height="40%">
 
 > Este módulo é fundamental para fornecer dados realistas e variados ao backend Python, permitindo o treinamento e validação do modelo de Machine Learning e das regras de negócio do sistema de alerta.
 ### Pipeline de Dados
