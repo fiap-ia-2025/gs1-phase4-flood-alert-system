@@ -193,6 +193,20 @@ Este módulo consolida as informações para gerar o alerta final.
 
 ## ▶️ Como Rodar o Projeto
 
+### ⚠️ Importante: Estratégia de Uso dos Modos (Simulação vs. Real)
+
+O Módulo Sensor IoT opera em dois modos distintos, e é crucial entender o propósito de cada um para o treinamento e teste do sistema de IA:
+
+* **Modo Simulação (Para Treinamento de Qualidade):**
+    Este modo gera o cenário completo e calibrado de uma enchente em 5 fases. **É o modo que deve ser utilizado para gerar o `projeto.db` destinado ao treinamento inicial do modelo**, pois garante um conjunto de dados rico, com exemplos de todas as categorias de risco (Normal, Alerta, Perigo).
+
+* **Modo Real (Para Teste e Validação em Tempo Real):**
+    Este modo lê os valores dos controles manuais no Wokwi. **É ideal para testar a resposta do sistema *já treinado* a dados arbitrários e validar o fluxo de ponta a ponta.** Não é recomendado usar dados gerados neste modo para o treinamento inicial, pois eles podem não conter a diversidade e a progressão necessárias.
+
+> **Recomendação:** Para replicar os resultados e garantir a maior acurácia do modelo, sempre gere seu conjunto de dados de treinamento utilizando o **Modo Simulação**.
+
+---
+
 ### ✅ Requisitos
 
 - [Visual Studio Code (VS Code)](https://code.visualstudio.com/)
@@ -287,7 +301,11 @@ Se desejar gerar um novo conjunto de dados ou testar o pipeline completo:
     ```bash
     python testar_analise.py
     ```
-*(incluir aqui o próximo passo que será o streamlit)*
+7.  **Dashboard Streamlit:**
+   Ainda na pasta `python-backend`, para verificar o dashboard com as informações da previsão de risco, execute:
+    ```bash
+    streamlit run app.py
+    ```
 
 ## 📊 Resultados Esperados e Demonstração
 
