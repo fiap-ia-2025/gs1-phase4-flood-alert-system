@@ -6,7 +6,7 @@
   </a>
 </p>
 
-## 👥 Grupo XX
+## 👥 Grupo 56
 
 
 ## 👨‍🎓 Integrantes:
@@ -107,7 +107,8 @@ gs1-phase4-flood-alert-system/
 │   ├── app.py                        # Visualização de dashboard
 │   └── projeto.db                    # Banco de dados SQLite
 |
-├── img/                              # Imagens utilizadas no README
+├── img/                              
+|   ├── diagrama.png                  # diagrama wokwi        
 │   ├── logo_fiap.png                 # Logo da faculdade
 |
 └── README.md                     
