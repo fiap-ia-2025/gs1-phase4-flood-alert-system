@@ -30,11 +30,16 @@
 
 # Sistema Inteligente de Alerta de Enchentes para Recife
 
+[![Assista ao vídeo](https://img.youtube.com/vi/Vx-_03hVFBA/0.jpg)](https://youtu.be/Vx-_03hVFBA)
+
+
 ## 📖 Descrição do Projeto
 
 Este sistema é uma solução digital desenvolvida no âmbito da Global Solution 2025.1 da FIAP, com o objetivo de prever e monitorar os riscos de enchentes na cidade do Recife, Pernambuco. Utilizando uma abordagem baseada em dados, o sistema simula um ambiente com sensores IoT, coleta e processa essas informações, e emprega um modelo de Machine Learning em conjunto com regras de negócio para classificar o nível de risco e emitir alertas.
 
 Este projeto visa demonstrar como a tecnologia e a Inteligência Artificial podem ser aplicadas para mitigar os impactos de eventos naturais extremos, oferecendo uma ferramenta proativa para a Defesa Civil e para a população.
+
+
 
 ## 🎯 Contexto do Problema e Justificativa
 
@@ -218,7 +223,7 @@ O Módulo Sensor IoT opera em dois modos distintos, e é crucial entender o prop
 - Git instalado na máquina (para clonar o repositório)
 - As seguintes bibliotecas instaladas:
   ```bash
-  pip install streamlit pandas matplotlib seaborn paho-mqtt
+  pip install streamlit pandas matplotlib seaborn paho-mqtt scikit-learn
   ```
 
 ## 🔧 Passo a Passo
@@ -313,11 +318,8 @@ Se desejar gerar um novo conjunto de dados ou testar o pipeline completo:
 O sistema deverá:
 * Coletar e armazenar os dados da simulação corretamente.
 * Treinar o modelo de Machine Learning com uma acurácia satisfatória (ex: >90%) nos dados de teste.
-* O script `testar_analise.py` demonstrará a progressão do status de alerta (Normal -> Perigo) conforme os dados simulados evoluem, mostrando a capacidade do sistema de identificar riscos baseados nos parâmetros de Recife.
-* (incluir aqui informação do streamit tbm)
-
-*(incluir vídeo para o youtube aqui).*
-
+* O script `testar_analise.py` demonstrará a progressão do status de alerta (Normal -> Perigo) conforme os dados simulados evoluem, mostrando a capacidade do sistema de identificar riscos baseados nos parâmetros de Recif
+  
 
 ## 📚 Fontes de Pesquisa e Dados de Referência
 
